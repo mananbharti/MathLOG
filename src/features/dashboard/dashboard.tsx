@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight, Brain, Clock, Flame, Leaf, RotateCcw, Sparkles, Trees } from "lucide-react";
+import { motion } from "framer-motion";
 import { useMathStore } from "@/store/use-math-store";
 import { getReviewQueue, getStaleTopics } from "@/lib/spaced-repetition";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,17 +57,32 @@ export function Dashboard() {
     }
   }
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <div className="grid gap-4 2xl:grid-cols-[1.2fr_0.8fr]">
-      <div className="grid gap-4">
-        <div className="grid gap-4 md:grid-cols-4">
+    <motion.div variants={container} initial="hidden" animate="show" className="grid gap-5 2xl:grid-cols-[1.2fr_0.8fr]">
+      <div className="grid gap-5">
+        <motion.div variants={item} className="grid gap-5 md:grid-cols-4">
           <Metric label="Study streak" value={`${streak} days`} detail={streak > 0 ? "Keep it up!" : "Start today"} />
           <Metric label="Study hours" value={`${hours}h`} detail="From tracked sessions" />
           <Metric label="Current phase" value={`Phase ${currentPhase.order}`} detail={`${currentPhaseProgress}% phase completion`} />
           <Metric label="Reviews today" value={`${reviews.length}`} detail={`${stale.length} stale topics`} />
-        </div>
+        </motion.div>
 
-        <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
+        <motion.div variants={item} className="grid gap-5 lg:grid-cols-[360px_1fr]">
           <Card>
             <CardHeader>
               <CardTitle>Mastery Ring</CardTitle>
@@ -94,27 +110,27 @@ export function Dashboard() {
                 </p>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                  <Brain className="h-5 w-5 text-blue-300" />
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4 transition-all hover:bg-white/[0.06]">
+                  <Brain className="h-5 w-5 text-blue-300 icon-glow" />
                   <div className="mt-3 text-sm font-semibold">{activeTopic.title}</div>
                   <p className="mt-1 text-xs text-white/45">Current topic</p>
                 </div>
-                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                  <RotateCcw className="h-5 w-5 text-cyan-300" />
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4 transition-all hover:bg-white/[0.06]">
+                  <RotateCcw className="h-5 w-5 text-cyan-300 icon-glow" />
                   <div className="mt-3 text-sm font-semibold">SM-2 reviews</div>
                   <p className="mt-1 text-xs text-white/45">Due queue generated</p>
                 </div>
-                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                  <Flame className="h-5 w-5 text-violet-300" />
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4 transition-all hover:bg-white/[0.06]">
+                  <Flame className="h-5 w-5 text-violet-300 icon-glow" />
                   <div className="mt-3 text-sm font-semibold">{completed}/{topics.length} done</div>
                   <p className="mt-1 text-xs text-white/45">Overall completion</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        <motion.div variants={item} className="grid gap-5 lg:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Study Heatmap</CardTitle>
@@ -149,9 +165,9 @@ export function Dashboard() {
               })}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <motion.div variants={item} className="grid gap-5 lg:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle>Learning DNA</CardTitle>
@@ -228,10 +244,10 @@ export function Dashboard() {
               })}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="grid gap-4">
+      <motion.div variants={item} className="grid gap-5">
         <Card>
           <CardHeader>
             <CardTitle>Today's Reviews</CardTitle>
@@ -267,7 +283,7 @@ export function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>AI Recommendations</CardTitle>
-            <Sparkles className="h-4 w-4 text-cyan-300" />
+            <Sparkles className="h-4 w-4 text-cyan-300 icon-glow" />
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-white/60">
             <p>Start with {activeTopic.title} in {currentPhase.name}.</p>
@@ -299,7 +315,7 @@ export function Dashboard() {
             })}
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -176,12 +176,21 @@ export function MathOSApp() {
                 <button
                   key={item.label}
                   onClick={() => setActiveView(item.label)}
-                  className={`flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm transition ${
-                    active ? "bg-white/10 text-white shadow-inner" : "text-white/55 hover:bg-white/[0.06] hover:text-white/85"
+                  className={`group relative flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm transition-all duration-300 ${
+                    active ? "text-white" : "text-white/55 hover:bg-white/[0.04] hover:text-white/85"
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
+                  {active && (
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute inset-0 rounded-lg bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    >
+                      <div className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                    </motion.div>
+                  )}
+                  <Icon className={`relative z-10 h-4 w-4 transition-transform duration-300 ${active ? "text-cyan-300 scale-110 icon-glow" : "group-hover:scale-110"}`} />
+                  <span className="relative z-10 font-medium">{item.label}</span>
                 </button>
               );
             })}
@@ -198,7 +207,8 @@ export function MathOSApp() {
       </aside>
 
       <main className="min-w-0 flex-1 pb-24 lg:pb-0 lg:pl-72">
-        <header className="sticky top-0 z-10 border-b border-white/10 bg-[#050608]/70 px-5 py-4 backdrop-blur-2xl lg:px-8">
+        <header className="sticky top-0 z-40 bg-[#03040b]/60 px-5 py-4 backdrop-blur-3xl lg:px-8 border-b border-white/[0.06] shadow-sm">
+          <div className="absolute bottom-0 left-0 h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 lg:block">
@@ -237,15 +247,26 @@ export function MathOSApp() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/10 bg-black/70 px-2 py-2 backdrop-blur-2xl lg:hidden">
-        <div className="grid grid-cols-5 gap-1">
+      <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center justify-center lg:hidden">
+        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-[#050814]/80 p-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] backdrop-blur-3xl">
           {navItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
             const active = activeView === item.label;
             return (
-              <button key={item.label} onClick={() => setActiveView(item.label)} className={`rounded-lg px-2 py-2 text-[11px] ${active ? "bg-white/10 text-white" : "text-white/45"}`}>
-                <Icon className="mx-auto h-4 w-4" />
-                <span className="mt-1 block truncate">{item.label}</span>
+              <button 
+                key={item.label} 
+                onClick={() => setActiveView(item.label)} 
+                className={`group relative flex flex-col items-center justify-center rounded-full px-4 py-2 transition-all duration-300 ${active ? "text-white" : "text-white/40 hover:text-white/70"}`}
+              >
+                {active && (
+                  <motion.div
+                    layoutId="mobileNavActive"
+                    className="absolute inset-0 rounded-full bg-blue-600/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <Icon className={`relative z-10 h-5 w-5 ${active ? "text-blue-100" : ""}`} />
+                <span className="relative z-10 mt-1 text-[10px] font-medium tracking-wide">{item.label}</span>
               </button>
             );
           })}
@@ -254,11 +275,11 @@ export function MathOSApp() {
 
       <button
         onClick={() => setActiveView("AI Coach")}
-        className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full border border-cyan-200/20 bg-cyan-300/10 shadow-[0_0_40px_rgba(34,211,238,0.28)] backdrop-blur-xl transition hover:scale-105 lg:bottom-6"
+        className="group fixed bottom-24 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-sky-400 via-indigo-500 to-purple-500 shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 hover:scale-110 hover:shadow-[0_0_50px_rgba(99,102,241,0.6)] lg:bottom-6"
         aria-label="Open AI mentor"
       >
-        <span className="absolute h-14 w-14 animate-ping rounded-full bg-cyan-300/10" />
-        <Sparkles className="relative h-6 w-6 text-cyan-100" />
+        <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-sky-400 via-indigo-500 to-purple-500 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+        <Sparkles className="relative h-6 w-6 text-white" />
       </button>
 
       <AnimatePresence>

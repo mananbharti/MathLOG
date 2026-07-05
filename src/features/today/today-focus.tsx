@@ -2,26 +2,23 @@
 
 import { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Clock, Focus, Play, X, RotateCcw } from "lucide-react";
+import { Check, CheckCircle2, Clock, Focus, Play, X, RotateCcw, Camera } from "lucide-react";
 import { useMathStore } from "@/store/use-math-store";
 import { getReviewQueue } from "@/lib/spaced-repetition";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 export function TodayFocus() {
   const { topics, addSession, reviewTopic, selectTopic } = useMathStore();
   const [sessionOpen, setSessionOpen] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(50 * 60); // 50 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(50 * 60);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextTopic = topics.find((topic) => topic.status !== "Done" && !topic.archived) ?? topics[0];
   const reviews = getReviewQueue(topics).slice(0, 3);
-  const mission = useMemo(() => {
-    if (reviews.length) return `Review ${reviews[0].title}`;
-    return `Study ${nextTopic.title}`;
-  }, [nextTopic.title, reviews]);
+  
+  const tags = ["Exact curriculum", "No AI shortcuts", "Instant retention"];
 
   // Timer logic
   useEffect(() => {
@@ -41,7 +38,6 @@ export function TodayFocus() {
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
-      // Reset when closed
       setTimeLeft(50 * 60);
       setSessionStartTime(null);
     }
@@ -59,7 +55,6 @@ export function TodayFocus() {
 
   const completeSession = () => {
     const now = new Date();
-    // Calculate actual elapsed minutes, min 1
     const elapsedMinutes = sessionStartTime 
       ? Math.max(1, Math.round((now.getTime() - sessionStartTime.getTime()) / 60_000))
       : 50;
@@ -79,83 +74,106 @@ export function TodayFocus() {
   };
 
   return (
-    <div className="mx-auto grid min-h-[calc(100vh-140px)] max-w-5xl place-items-center">
-      <Card className="w-full overflow-hidden">
-        <CardContent className="p-6 sm:p-10">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
-                <Focus className="h-6 w-6 text-cyan-200" />
-              </div>
-              <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">Today's Mission</p>
-              <h2 className="mt-3 max-w-3xl text-5xl font-semibold tracking-normal text-white sm:text-6xl">{mission}</h2>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-white/55">
-                Everything else can wait. Start one clean block, capture one insight, and let the system build from real work.
-              </p>
+    <div className="flex min-h-[calc(100vh-160px)] flex-col items-center justify-center py-20">
+      
+      {/* Top Badge */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className="flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-300"
+      >
+        <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+        Powered by AI Coach
+      </motion.div>
+
+      {/* Headline */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.7 }}
+        className="mt-8 text-center"
+      >
+        <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif tracking-tight text-white/90">
+          Any math topic. <br />
+          <span className="text-gradient italic font-serif">Perfect</span> understanding.
+        </h1>
+        <p className="mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-white/50">
+          Dive deep into {nextTopic?.title || "your curriculum"}.
+          <br /> Let the AI guide your retention and build real mastery.
+        </p>
+      </motion.div>
+
+      {/* Tags */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="mt-10 flex flex-wrap justify-center gap-3"
+      >
+        {tags.map((tag, i) => (
+          <div key={i} className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-white/70">
+            <Check className="h-3 w-3 text-cyan-400" />
+            {tag}
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Primary Action */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5, duration: 0.5, type: "spring" }}
+        className="mt-12"
+      >
+        <Button variant="primary" onClick={() => setSessionOpen(true)} className="group flex items-center justify-between w-64 h-16">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 shadow-inner">
+              <Focus className="h-4 w-4 text-white" />
             </div>
-            <div className="grid gap-3 sm:min-w-72">
-              <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-white/35">Review</p>
-                <p className="mt-2 text-xl font-semibold">{reviews[0]?.title ?? "Nothing due"}</p>
-              </div>
-              <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-white/35">Study</p>
-                <p className="mt-2 text-xl font-semibold">{nextTopic.title}</p>
-              </div>
-              <Button variant="primary" className="h-12" onClick={() => setSessionOpen(true)}>
-                <Play className="h-4 w-4" />
-                Start Session
-              </Button>
+            <div className="flex flex-col items-start">
+              <span className="text-[15px] font-bold">Start Session</span>
+              <span className="text-[10px] font-medium text-white/70">Deep focus timer</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <Play className="h-4 w-4 opacity-50 transition-transform group-hover:translate-x-1 group-hover:opacity-100" />
+        </Button>
+      </motion.div>
 
+      {/* Timer Modal */}
       <AnimatePresence>
         {sessionOpen ? (
-          <motion.div className="fixed inset-0 z-[70] bg-[#050608]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div className="fixed inset-0 z-50 bg-[#020617] backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="flex min-h-screen flex-col p-6 sm:p-10">
               <div className="flex items-center justify-between">
-                <div className="text-sm uppercase tracking-[0.18em] text-white/35">Focus Session</div>
-                <Button variant="outline" size="icon" onClick={() => setSessionOpen(false)} aria-label="Close session">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/40">Focus Session Active</div>
+                <Button variant="outline" size="icon" onClick={() => setSessionOpen(false)} aria-label="Close session" className="rounded-full">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
               <div className="grid flex-1 place-items-center">
                 <div className="max-w-3xl text-center">
-                  <Clock className="mx-auto h-10 w-10 text-cyan-200" />
-                  <div className={`mt-8 text-7xl font-semibold tracking-normal sm:text-8xl tabular-nums ${timeLeft === 0 ? "text-red-400" : ""}`}>
+                  <div className={`mt-8 text-7xl font-semibold tracking-tight sm:text-[9rem] tabular-nums font-serif ${timeLeft === 0 ? "text-red-400" : "text-white"}`}>
                     {formatTime(timeLeft)}
                   </div>
-                  <h2 className="mt-8 text-4xl font-semibold tracking-normal">{nextTopic.title}</h2>
-                  <p className="mt-4 text-white/50">Write one insight, one question, and one example before ending.</p>
+                  <h2 className="mt-8 text-2xl font-medium tracking-normal text-white/80">{nextTopic.title}</h2>
+                  <p className="mt-4 text-sm text-white/50">Write one insight, one question, and one example before ending.</p>
                   
-                  <div className="mt-6 flex justify-center gap-4">
+                  <div className="mt-8 flex justify-center gap-4">
                     {timeLeft === 0 ? (
-                      <p className="text-cyan-300 font-semibold animate-pulse">Session complete! Great work.</p>
+                      <p className="text-cyan-400 font-semibold animate-pulse">Session complete! Great work.</p>
                     ) : (
-                      <Button variant="ghost" size="sm" onClick={() => setTimeLeft(50 * 60)} className="text-white/30 hover:text-white/60">
+                      <Button variant="ghost" size="sm" onClick={() => setTimeLeft(50 * 60)} className="text-white/40 hover:text-white rounded-full">
                         <RotateCcw className="h-4 w-4 mr-2" />
-                        Reset
+                        Reset Timer
                       </Button>
                     )}
                   </div>
 
-                  <div className="mt-10 flex justify-center gap-3">
-                    <Button
-                      variant="primary"
-                      onClick={completeSession}
-                    >
+                  <div className="mt-12 flex justify-center gap-4">
+                    <Button variant="primary" onClick={completeSession} className="rounded-full px-8">
                       <CheckCircle2 className="h-4 w-4" />
                       {timeLeft === 0 ? "Log Session" : "End & Log Early"}
-                    </Button>
-                    {reviews[0] ? (
-                      <Button variant="outline" onClick={() => reviewTopic(reviews[0].id, 4)}>
-                        Mark Review Good
-                      </Button>
-                    ) : null}
-                    <Button variant="outline" onClick={() => { selectTopic(nextTopic.id); setSessionOpen(false); }}>
-                      Open Topic
                     </Button>
                   </div>
                 </div>
