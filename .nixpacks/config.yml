@@ -1,0 +1,9 @@
+setup:
+  node: "22"
+install:
+  - "npm ci --legacy-peer-deps"
+build:
+  - "npm run build"
+start:
+  - "npm start"
+cache: []
