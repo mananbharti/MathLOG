@@ -15,7 +15,7 @@ A math workspace in the browser: notes, diagrams, calendars, and KaTeX — close
 ## Local run
 
 ```bash
-git clone https://github.com/BiasManan2010/MathLOG.git
+git clone https://github.com/mananbharti/MathLOG.git
 cd MathLOG
 npm install
 npm run dev
@@ -33,4 +33,4 @@ See `DEPLOYMENT.md` for Netlify / Railway / Docker notes.
 
 ## Author
 
-**Manan Bharti** ([@BiasManan2010](https://github.com/BiasManan2010)) · Diploma CS, Thapar Institute · aiming at AI / ML systems
+**Manan Bharti** ([@mananbharti](https://github.com/mananbharti)) · Diploma CS, Thapar Institute · aiming at AI / ML systems
