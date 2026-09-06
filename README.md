@@ -1,5 +1,7 @@
 # MathLOG
 
+[![buymeachai](https://img.shields.io/badge/buymeachai-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeachai.in/mananbharti)
+
 A math workspace in the browser: notes, diagrams, calendars, and KaTeX — closer to a personal math OS than a calculator.
 
 **Stack:** Next.js · TypeScript · Tailwind · Supabase · TipTap · React Flow · Recharts · FullCalendar · KaTeX
